@@ -19,6 +19,7 @@ from wazuh import agent, stats
 from wazuh.core.cluster.control import get_system_nodes
 from wazuh.core.cluster.dapi.dapi import DistributedAPI
 from wazuh.core.common import database_limit
+from wazuh.core.exception import WazuhResourceNotFound
 from wazuh.core.results import AffectedItemsWazuhResult
 
 logger = logging.getLogger('wazuh-api')
@@ -1002,6 +1003,7 @@ async def restart_agents_by_group(request, group_id, pretty=False, wait_for_comp
     -------
     Response
     """
+    group_id not in agent.get_groups() and raise_if_exc(WazuhResourceNotFound(1710))
     agent_list = agent.get_agents_in_group_restart(group_id=[group_id])
     if not agent_list:
         data = AffectedItemsWazuhResult(none_msg='Restart command was not sent to any agent')

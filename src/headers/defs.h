@@ -64,11 +64,11 @@
 #define DATE_LENGTH     64                  /* Format date time %D %T           */
 
 /* Some global names */
-#define __ossec_name    "Wazuh"
+#define __ossec_name    "NSOC360"
 #define __ossec_version "v4.3.0"
-#define __author        "Wazuh Inc."
-#define __contact       "info@wazuh.com"
-#define __site          "http://www.wazuh.com"
+#define __author        "NSOC360 Inc."
+#define __contact       "info@nsoc360.com"
+#define __site          "http://www.nsoc360.com"
 #define __license       "\
 This program is free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License (version 2) as \n\

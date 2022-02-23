@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?define wl="wazuh" ?>
+<?define wlc="Wazuh" ?>
+<?define wlu="WAZUH" ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-    <Product Id="*" Name="Wazuh Agent" Language="1033" Version="4.2.5" Manufacturer="Wazuh, Inc." UpgradeCode="F495AC57-7BDE-4C4B-92D8-DBE40A9AA5A0">
-        <Package Description="Wazuh helps you to gain security visibility into your infrastructure by monitoring hosts at an operating system and application level. It provides the following capabilities: log analysis, file integrity monitoring, intrusions detection and policy and compliance monitoring" Comments="wazuh-agent" InstallerVersion="200" Compressed="yes" />
+    <Product Id="*" Name="$(var.wlc) Agent" Language="1033" Version="4.2.5" Manufacturer="$(var.wlu), Inc." UpgradeCode="F495AC57-7BDE-4C4B-92D8-DBE40A9AA5A0">
+        <Package Description="$(var.wlc) helps you to gain security visibility into your infrastructure by monitoring hosts at an operating system and application level. It provides the following capabilities: log analysis, file integrity monitoring, intrusions detection and policy and compliance monitoring" Comments="$(var.wl)-agent" InstallerVersion="200" Compressed="yes" />
         <Media Id="1" Cabinet="simple.cab" EmbedCab="yes" CompressionLevel="high" />
         <!-- Default configuration values -->
-        <Property Id="WAZUH_MANAGER" Secure="yes">
+        <Property Id="NSOC_MANAGER" Secure="yes">
         </Property>
-        <Property Id="WAZUH_MANAGER_PORT" Secure="yes">
+        <Property Id="NSOC_MANAGER_PORT" Secure="yes">
         </Property>
-        <Property Id="WAZUH_PROTOCOL" Secure="yes">
+        <Property Id="NSOC_PROTOCOL" Secure="yes">
         </Property>
-        <Property Id="WAZUH_REGISTRATION_SERVER" Secure="yes">
+        <Property Id="NSOC_REGISTRATION_SERVER" Secure="yes">
         </Property>
-        <Property Id="WAZUH_REGISTRATION_PORT" Secure="yes">1515</Property>
-        <Property Id="WAZUH_REGISTRATION_PASSWORD" Secure="yes">
+        <Property Id="NSOC_REGISTRATION_PORT" Secure="yes">1515</Property>
+        <Property Id="NSOC_REGISTRATION_PASSWORD" Secure="yes">
         </Property>
-        <Property Id="WAZUH_KEEP_ALIVE_INTERVAL" Secure="yes">
+        <Property Id="NSOC_KEEP_ALIVE_INTERVAL" Secure="yes">
         </Property>
-        <Property Id="WAZUH_TIME_RECONNECT" Secure="yes">
+        <Property Id="NSOC_TIME_RECONNECT" Secure="yes">
         </Property>
-        <Property Id="WAZUH_REGISTRATION_CA" Secure="yes">
+        <Property Id="NSOC_REGISTRATION_CA" Secure="yes">
         </Property>
-        <Property Id="WAZUH_REGISTRATION_CERTIFICATE" Secure="yes">
+        <Property Id="NSOC_REGISTRATION_CERTIFICATE" Secure="yes">
         </Property>
-        <Property Id="WAZUH_REGISTRARTION_KEY" Secure="yes">
+        <Property Id="NSOC_REGISTRARTION_KEY" Secure="yes">
         </Property>
-        <Property Id="WAZUH_AGENT_NAME" Secure="yes">
+        <Property Id="NSOC_AGENT_NAME" Secure="yes">
         </Property>
-        <Property Id="WAZUH_AGENT_GROUP" Secure="yes">
+        <Property Id="NSOC_AGENT_GROUP" Secure="yes">
         </Property>
         <!-- Deprecated options -->
         <Property Id="ADDRESS" Secure="yes">
@@ -93,48 +96,48 @@
 
         <CustomAction Id="CheckSvcRunning_OssecSvc" BinaryKey="InstallerScripts" VBScriptCall="CheckSvcRunning" Return="check" Execute="immediate" Impersonate="no" />
 
-        <CustomAction Id="SetCustomActionDataValue" Return="check" Property="CustomAction_InstallerScripts" Value="&quot;[APPLICATIONFOLDER]&quot;,&quot;[ADDRESS]&quot;,&quot;[SERVER_PORT]&quot;,&quot;[PROTOCOL]&quot;,&quot;[NOTIFY_TIME]&quot;,&quot;[TIME_RECONNECT]&quot;,&quot;[WAZUH_MANAGER]&quot;,&quot;[WAZUH_MANAGER_PORT]&quot;,&quot;[WAZUH_PROTOCOL]&quot;,&quot;[WAZUH_KEEP_ALIVE_INTERVAL]&quot;,&quot;[WAZUH_TIME_RECONNECT]&quot;" />
+        <CustomAction Id="SetCustomActionDataValue" Return="check" Property="CustomAction_InstallerScripts" Value="&quot;[APPLICATIONFOLDER]&quot;,&quot;[ADDRESS]&quot;,&quot;[SERVER_PORT]&quot;,&quot;[PROTOCOL]&quot;,&quot;[NOTIFY_TIME]&quot;,&quot;[TIME_RECONNECT]&quot;,&quot;[NSOC_MANAGER]&quot;,&quot;[NSOC_MANAGER_PORT]&quot;,&quot;[NSOC_PROTOCOL]&quot;,&quot;[NSOC_KEEP_ALIVE_INTERVAL]&quot;,&quot;[NSOC_TIME_RECONNECT]&quot;" />
         <CustomAction Id="CustomAction_InstallerScripts" BinaryKey="InstallerScripts" VBScriptCall="config" Return="check" Execute="commit" Impersonate="no" />
 
-        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT]" />
-        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot;" />
-        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -v &quot;[WAZUH_REGISTRATION_CA]&quot;" />
-        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -v &quot;[WAZUH_REGISTRATION_CA]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT]" />
+        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -v &quot;[NSOC_REGISTRATION_CA]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -v &quot;[NSOC_REGISTRATION_CA]&quot;" />
 
-        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_Password" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD]" />
-        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot;" />
-        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -v &quot;[WAZUH_REGISTRATION_CA]&quot;" />
-        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -v &quot;[WAZUH_REGISTRATION_CA]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_Password" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD]" />
+        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -v &quot;[NSOC_REGISTRATION_CA]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -v &quot;[NSOC_REGISTRATION_CA]&quot;" />
 
-        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT]" />
-        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot;" />
-        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -v &quot;[WAZUH_REGISTRATION_CA]&quot;" />
-        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -v &quot;[WAZUH_REGISTRATION_CA]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT]" />
+        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -v &quot;[NSOC_REGISTRATION_CA]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -v &quot;[NSOC_REGISTRATION_CA]&quot;" />
 
-        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_Password" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD]" />
-        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot;" />
-        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -v &quot;[WAZUH_REGISTRATION_CA]&quot;" />
-        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -v &quot;[WAZUH_REGISTRATION_CA]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_Password" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD]" />
+        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -v &quot;[NSOC_REGISTRATION_CA]&quot;" />
+        <CustomAction Id="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -v &quot;[NSOC_REGISTRATION_CA]&quot;" />
 
-        <CustomAction Id="CustomAction_Group_NoName_RunAuthd" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -v &quot;[WAZUH_REGISTRATION_CA]&quot; -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -v &quot;[WAZUH_REGISTRATION_CA]&quot; -G [WAZUH_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_NoName_RunAuthd" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -v &quot;[NSOC_REGISTRATION_CA]&quot; -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -v &quot;[NSOC_REGISTRATION_CA]&quot; -G [NSOC_AGENT_GROUP]" />
 
-        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_Password" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_Password_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_Password_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -v &quot;[WAZUH_REGISTRATION_CA]&quot; -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_Password_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -v &quot;[WAZUH_REGISTRATION_CA]&quot; -G [WAZUH_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_Password" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_Password_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_Password_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -v &quot;[NSOC_REGISTRATION_CA]&quot; -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_NoName_RunAuthd_Password_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -v &quot;[NSOC_REGISTRATION_CA]&quot; -G [NSOC_AGENT_GROUP]" />
 
-        <CustomAction Id="CustomAction_Group_Name_RunAuthd" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_Name_RunAuthd_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_Name_RunAuthd_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -v &quot;[WAZUH_REGISTRATION_CA]&quot; -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_Name_RunAuthd_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -v &quot;[WAZUH_REGISTRATION_CA]&quot; -G [WAZUH_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_Name_RunAuthd" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_Name_RunAuthd_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_Name_RunAuthd_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -v &quot;[NSOC_REGISTRATION_CA]&quot; -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_Name_RunAuthd_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -v &quot;[NSOC_REGISTRATION_CA]&quot; -G [NSOC_AGENT_GROUP]" />
 
-        <CustomAction Id="CustomAction_Group_Name_RunAuthd_Password" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_Name_RunAuthd_Password_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_Name_RunAuthd_Password_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -v &quot;[WAZUH_REGISTRATION_CA]&quot; -G [WAZUH_AGENT_GROUP]" />
-        <CustomAction Id="CustomAction_Group_Name_RunAuthd_Password_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [WAZUH_REGISTRATION_SERVER] -A [WAZUH_AGENT_NAME] -p [WAZUH_REGISTRATION_PORT] -P [WAZUH_REGISTRATION_PASSWORD] -k &quot;[WAZUH_REGISTRATION_KEY]&quot; -x &quot;[WAZUH_REGISTRATION_CERTIFICATE]&quot; -v &quot;[WAZUH_REGISTRATION_CA]&quot; -G [WAZUH_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_Name_RunAuthd_Password" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_Name_RunAuthd_Password_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_Name_RunAuthd_Password_VerifyManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -v &quot;[NSOC_REGISTRATION_CA]&quot; -G [NSOC_AGENT_GROUP]" />
+        <CustomAction Id="CustomAction_Group_Name_RunAuthd_Password_VerifyAgentManager" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [NSOC_REGISTRATION_SERVER] -A [NSOC_AGENT_NAME] -p [NSOC_REGISTRATION_PORT] -P [NSOC_REGISTRATION_PASSWORD] -k &quot;[NSOC_REGISTRATION_KEY]&quot; -x &quot;[NSOC_REGISTRATION_CERTIFICATE]&quot; -v &quot;[NSOC_REGISTRATION_CA]&quot; -G [NSOC_AGENT_GROUP]" />
 
         <CustomAction Id="DepCustomAction_NoGroup_NoName_RunAuthd" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [AUTHD_SERVER] -p [AUTHD_PORT]" />
         <CustomAction Id="DepCustomAction_NoGroup_NoName_RunAuthd_VerifyAgent" Directory="APPLICATIONFOLDER" Execute="immediate" ExeCommand="[APPLICATIONFOLDER]agent-auth.exe -m [AUTHD_SERVER] -p [AUTHD_PORT] -k &quot;[KEY]&quot; -x &quot;[PEM]&quot;" />
@@ -203,47 +206,47 @@
             <Custom Action="SetRemoveAllDataValue" Before="InstallFinalize">(NOT UPGRADINGPRODUCTCODE) AND (REMOVE="ALL")</Custom>
             <Custom Action="CustomAction_RemoveAllScript" After="SetRemoveAllDataValue">(NOT UPGRADINGPRODUCTCODE) AND (REMOVE="ALL")</Custom>
 
-            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_VerifyAgent" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
-            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_VerifyManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_VerifyAgentManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_VerifyAgent" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_VerifyManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_VerifyAgentManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
 
-            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_Password" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyAgent" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
-            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyAgentManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_Password" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyAgent" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_NoGroup_NoName_RunAuthd_Password_VerifyAgentManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
 
-            <Custom Action="CustomAction_NoGroup_Name_RunAuthd" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_VerifyAgent" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
-            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_VerifyManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_VerifyAgentManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_NoGroup_Name_RunAuthd" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_VerifyAgent" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_VerifyManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_VerifyAgentManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
 
-            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_Password" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyAgent" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
-            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyAgentManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP = "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_Password" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyAgent" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_NoGroup_Name_RunAuthd_Password_VerifyAgentManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP = "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
 
-            <Custom Action="CustomAction_Group_NoName_RunAuthd" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_Group_NoName_RunAuthd_VerifyAgent" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
-            <Custom Action="CustomAction_Group_NoName_RunAuthd_VerifyManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_Group_NoName_RunAuthd_VerifyAgentManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_Group_NoName_RunAuthd" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_Group_NoName_RunAuthd_VerifyAgent" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_Group_NoName_RunAuthd_VerifyManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_Group_NoName_RunAuthd_VerifyAgentManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
 
-            <Custom Action="CustomAction_Group_NoName_RunAuthd_Password" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_Group_NoName_RunAuthd_Password_VerifyAgent" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
-            <Custom Action="CustomAction_Group_NoName_RunAuthd_Password_VerifyManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_Group_NoName_RunAuthd_Password_VerifyAgentManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME = "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_Group_NoName_RunAuthd_Password" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_Group_NoName_RunAuthd_Password_VerifyAgent" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_Group_NoName_RunAuthd_Password_VerifyManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_Group_NoName_RunAuthd_Password_VerifyAgentManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME = "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
 
-            <Custom Action="CustomAction_Group_Name_RunAuthd" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_Group_Name_RunAuthd_VerifyAgent" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
-            <Custom Action="CustomAction_Group_Name_RunAuthd_VerifyManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_Group_Name_RunAuthd_VerifyAgentManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD = "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_Group_Name_RunAuthd" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_Group_Name_RunAuthd_VerifyAgent" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_Group_Name_RunAuthd_VerifyManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_Group_Name_RunAuthd_VerifyAgentManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD = "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
 
-            <Custom Action="CustomAction_Group_Name_RunAuthd_Password" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_Group_Name_RunAuthd_Password_VerifyAgent" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA = "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
-            <Custom Action="CustomAction_Group_Name_RunAuthd_Password_VerifyManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE = "" AND WAZUH_REGISTRATION_KEY = ""</Custom>
-            <Custom Action="CustomAction_Group_Name_RunAuthd_Password_VerifyAgentManager" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; "" AND WAZUH_AGENT_GROUP &lt;&gt; "" AND WAZUH_AGENT_NAME &lt;&gt; "" AND WAZUH_REGISTRATION_PASSWORD &lt;&gt; "" AND WAZUH_REGISTRATION_CA &lt;&gt; "" AND WAZUH_REGISTRATION_CERTIFICATE &lt;&gt; "" AND WAZUH_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_Group_Name_RunAuthd_Password" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_Group_Name_RunAuthd_Password_VerifyAgent" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA = "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
+            <Custom Action="CustomAction_Group_Name_RunAuthd_Password_VerifyManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE = "" AND NSOC_REGISTRATION_KEY = ""</Custom>
+            <Custom Action="CustomAction_Group_Name_RunAuthd_Password_VerifyAgentManager" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; "" AND NSOC_AGENT_GROUP &lt;&gt; "" AND NSOC_AGENT_NAME &lt;&gt; "" AND NSOC_REGISTRATION_PASSWORD &lt;&gt; "" AND NSOC_REGISTRATION_CA &lt;&gt; "" AND NSOC_REGISTRATION_CERTIFICATE &lt;&gt; "" AND NSOC_REGISTRATION_KEY &lt;&gt; ""</Custom>
 
-            <Custom Action="StartWinService" After="InstallFinalize">NOT Installed AND WAZUH_REGISTRATION_SERVER &lt;&gt; ""</Custom>
+            <Custom Action="StartWinService" After="InstallFinalize">NOT Installed AND NSOC_REGISTRATION_SERVER &lt;&gt; ""</Custom>
 
             <Custom Action="DepCustomAction_NoGroup_NoName_RunAuthd" After="InstallFinalize">NOT Installed AND AUTHD_SERVER &lt;&gt; "" AND GROUP = "" AND AGENT_NAME = "" AND PASSWORD = "" AND CERTIFICATE = "" AND PEM = "" AND KEY = ""</Custom>
             <Custom Action="DepCustomAction_NoGroup_NoName_RunAuthd_VerifyAgent" After="InstallFinalize">NOT Installed AND AUTHD_SERVER &lt;&gt; "" AND GROUP = "" AND AGENT_NAME = "" AND PASSWORD = "" AND CERTIFICATE = "" AND PEM &lt;&gt; "" AND KEY &lt;&gt; ""</Custom>
@@ -337,33 +340,34 @@
                     <Component Id="MANAGE_AGENTS.EXE" DiskId="1" Guid="C15C5883-00FB-41D7-B7E6-53C8BC30761F">
                         <File Id="MANAGE_AGENTS.EXE" Name="manage_agents.exe" Source="manage_agents.exe" />
                     </Component>
-                    <Component Id="WAZUH_AGENT_EVENTCHANNEL.EXE" DiskId="1" Guid="044E7997-12B6-4178-BD00-B90500DBA53F">
-                        <File Id="WAZUH_AGENT_EVENTCHANNEL.EXE" Name="wazuh-agent.exe" Source="wazuh-agent-eventchannel.exe" />
-                        <ServiceInstall Name="WazuhSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Wazuh Windows Agent" DisplayName="Wazuh" Id="svc_install_eventchannel" />
+                    <Component Id="$(var.wlu)_AGENT_EVENTCHANNEL.EXE" DiskId="1" Guid="044E7997-12B6-4178-BD00-B90500DBA53F">
+                        <File Id="$(var.wlu)_AGENT_EVENTCHANNEL.EXE" Name="$(var.wl)-agent.exe" Source="$(var.wl)-agent-eventchannel.exe" />
+                        <ServiceInstall Name="WazuhSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="$(var.wlc) Windows Agent" DisplayName="$(var.wlc)" Id="svc_install_eventchannel" />
                         <ServiceControl Id="svc_uninstall_eventchannel" Name="WazuhSvc" Remove="uninstall" Stop="uninstall" Wait="yes" />
                         <Condition>VersionNT &gt;= 600</Condition>
                     </Component>
-                    <Component Id="WAZUH_AGENT.EXE" DiskId="1" Guid="5CCEA6DC-8434-4137-9486-55AE3949266B">
-                        <File Id="WAZUH_AGENT.EXE" Name="wazuh-agent.exe" Source="wazuh-agent.exe" />
-                        <ServiceInstall Name="WazuhSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Wazuh Windows Agent" DisplayName="Wazuh" Id="svc_install" />
+                    <Component Id="$(var.wlu)_AGENT.EXE" DiskId="1" Guid="5CCEA6DC-8434-4137-9486-55AE3949266B">
+                        <File Id="$(var.wlu)_AGENT.EXE" Name="$(var.wl)-agent.exe" Source="$(var.wl)-agent.exe" />
+                        <ServiceInstall Name="WazuhSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="$(var.wlc) Windows Agent" DisplayName="$(var.wlc)" Id="svc_install" />
                         <ServiceControl Id="ServiceControl" Name="WazuhSvc" Stop="both" Remove="uninstall" Wait="yes" />
                         <Condition>VersionNT &lt; 600</Condition>
                     </Component>
-                    <Component Id="WAZUH_AGENT_UPGRADE_OSSEC.EXE" DiskId="1" Guid="FB49A2F0-3433-47D4-A668-4139718AFDAC">
-                        <File Id="WAZUH_AGENT_UPGRADE_OSSEC.EXE" Name="wazuh-agent.exe" Source="wazuh-agent-eventchannel.exe" />
-                        <ServiceInstall Name="WazuhSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Wazuh Windows Agent" DisplayName="Wazuh" Id="svc_install_upgrade_ossec" />
+                    <Component Id="$(var.wlu)_AGENT_UPGRADE_OSSEC.EXE" DiskId="1" Guid="FB49A2F0-3433-47D4-A668-4139718AFDAC">
+                        <File Id="$(var.wlu)_AGENT_UPGRADE_OSSEC.EXE" Name="$(var.wl)-agent.exe" Source="$(var.wl)-agent.exe" />
+                        <ServiceInstall Name="WazuhSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="$(var.wlc) Windows Agent" DisplayName="$(var.wlc)" Id="svc_install_upgrade_ossec" />
                         <ServiceControl Id="ServiceControl_ossec_upgrade" Name="WazuhSvc" Remove="uninstall" Start="install" Stop="both" Wait="yes" />
-                        <Condition>((OSSECINSTALLED AND (OSSECRUNNING = "Running")) OR (WAZUHINSTALLED = "Wazuh")) AND (VersionNT &gt;= 600)</Condition>
+                        <Condition>((OSSECINSTALLED AND (OSSECRUNNING = "Running")) OR (WAZUHINSTALLED = "$(var.wlc)")) AND (VersionNT &gt;= 600)</Condition>
                     </Component>
-                    <Component Id="WAZUH_AGENT_UPGRADE_OSSEC_NOEC.EXE" DiskId="1" Guid="B19AF43F-43AD-40D2-95B7-512E429DF099">
-                        <File Id="WAZUH_AGENT_UPGRADE_OSSEC_NOEC.EXE" Name="wazuh-agent.exe" Source="wazuh-agent.exe" />
-                        <ServiceInstall Name="WazuhSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Wazuh Windows Agent" DisplayName="Wazuh" Id="svc_install_upgrade_ossec_noec" />
+                    <Component Id="$(var.wlu)_AGENT_UPGRADE_OSSEC_NOEC.EXE" DiskId="1" Guid="B19AF43F-43AD-40D2-95B7-512E429DF099">
+                        <File Id="$(var.wlu)_AGENT_UPGRADE_OSSEC_NOEC.EXE" Name="$(var.wl)-agent.exe" Source="$(var.wl)-agent.exe" />
+                        <ServiceInstall Name="WazuhSvc" Type="ownProcess" Start="auto" ErrorControl="normal" Description="$(var.wlc) Windows Agent" DisplayName="$(var.wlc)" Id="svc_install_upgrade_ossec_noec" />
                         <ServiceControl Id="ServiceControl_ossec_upgrade_noec" Name="WazuhSvc" Remove="uninstall" Start="install" Stop="both" Wait="yes" />
-                        <Condition>((OSSECINSTALLED AND (OSSECRUNNING = "Running")) OR (WAZUHINSTALLED = "Wazuh")) AND (VersionNT &lt; 600)</Condition>
+                        <Condition>((OSSECINSTALLED AND (OSSECRUNNING = "Running")) OR (WAZUHINSTALLED = "$(var.wlc)")) AND (VersionNT &lt; 600)</Condition>
                     </Component>
                     <Component Id="VISTA_SEC.TXT" DiskId="1" Guid="20EF5801-369B-4EC2-87A2-59DCE56308D9">
                         <File Id="VISTA_SEC.TXT" Name="vista_sec.txt" Source="vista_sec.txt" />
                     </Component>
+                    <!-- File List Install -->
                     <Component Id="WIN32UI.EXE" DiskId="1" Guid="E7ACBC6F-D8A0-410B-B8D2-2AD9F5152BA0">
                         <File Id="WIN32UI.EXE" Name="win32ui.exe" Source="os_win32ui.exe">
                         </File>
@@ -388,8 +392,8 @@
                         <RemoveFile Id="NSIS_MANAGE_AGENTS_EXE" Name="manage_agents.exe" On="install" />
                         <RemoveFile Id="NSIS_OSSEC_AGENT_EXE" Name="ossec-agent.exe" On="install" />
                         <RemoveFile Id="NSIS_OSSEC_AGENT_STATE" Name="ossec-agent.state" On="install" />
-                        <RemoveFile Id="NSIS_WAZUH_AGENT_EXE" Name="wazuh-agent.exe" On="install" />
-                        <RemoveFile Id="NSIS_WAZUH_AGENT_STATE" Name="wazuh-agent.state" On="install" />
+                        <RemoveFile Id="NSIS_$(var.wlu)_AGENT_EXE" Name="$(var.wl)-agent.exe" On="install" />
+                        <RemoveFile Id="NSIS_$(var.wlu)_AGENT_STATE" Name="$(var.wl)-agent.state" On="install" />
                         <RemoveFile Id="NSIS_VERSION_TXT" Name="VERSION.txt" On="install" />
                         <RemoveFile Id="NSIS_HELP_TXT" Name="help.txt" On="install" />
                     </Component>
@@ -486,7 +490,7 @@
                         <Shortcut Id="EDIT_CONF" Name="Edit conf" Target="[APPLICATIONFOLDER]ossec.conf" WorkingDirectory="APPLICATIONFOLDER" />
                         <Shortcut Id="UninstallProduct" Name="Uninstall" Description="Uninstalls the application" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
                         <Shortcut Id="RUN_WIN32UI" Name="Manage Agent" Target="[APPLICATIONFOLDER]win32ui.exe" WorkingDirectory="APPLICATIONFOLDER" />
-                        <util:InternetShortcut Id="WebsiteShortcut" Name="Documentation" Target="https://documentation.wazuh.com" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" />
+                        <util:InternetShortcut Id="WebsiteShortcut" Name="Documentation" Target="https://nsoc360.com" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" />
                     </Component>
                 </Directory>
             </Directory>
@@ -621,7 +625,7 @@
                 <RemoveFolder Id="purgue_shared_dir" On="uninstall" />
             </Component>
         </DirectoryRef>
-        <Feature Id="MainFeature" Title="Wazuh Agent" Description="Install the Wazuh Agent program files" ConfigurableDirectory="APPLICATIONFOLDER" InstallDefault="local" TypicalDefault="install" AllowAdvertise="no" Absent="disallow">
+        <Feature Id="MainFeature" Title="$(var.wlc) Agent" Description="Install the $(var.wlc) Agent program files" ConfigurableDirectory="APPLICATIONFOLDER" InstallDefault="local" TypicalDefault="install" AllowAdvertise="no" Absent="disallow">
             <ComponentRef Id="REGISTRY_INSTALL_DIR" />
             <ComponentRef Id="AGENT_AUTH.EXE" />
             <ComponentRef Id="SYSCOLLECTOR_NORM_CONFIG" />
@@ -639,11 +643,11 @@
             <ComponentRef Id="LIBWINPTHREAD_1.DLL" />
             <ComponentRef Id="LIBGCC_S_SJLJ_1.DLL" />
             <ComponentRef Id="MANAGE_AGENTS.EXE" />
-            <ComponentRef Id="WAZUH_AGENT_EVENTCHANNEL.EXE" />
-            <ComponentRef Id="WAZUH_AGENT.EXE" />
-            <ComponentRef Id="WAZUH_AGENT_UPGRADE_OSSEC.EXE" />
-            <ComponentRef Id="WAZUH_AGENT_UPGRADE_OSSEC_NOEC.EXE" />
+            <ComponentRef Id="$(var.wlu)_AGENT_EVENTCHANNEL.EXE" />
+            <ComponentRef Id="$(var.wlu)_AGENT.EXE" />
+            <ComponentRef Id="$(var.wlu)_AGENT_UPGRADE_OSSEC.EXE" />
             <ComponentRef Id="VISTA_SEC.TXT" />
+            <!-- File List Uninstall -->
             <ComponentRef Id="RESTART_WAZUH.EXE" />
             <ComponentRef Id="ROUTE_NULL.EXE" />
             <ComponentRef Id="NETSH.EXE" />

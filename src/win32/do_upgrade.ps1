@@ -4,10 +4,10 @@ function install
     kill -processname win32ui -ErrorAction SilentlyContinue -Force
     Remove-Item .\upgrade\upgrade_result -ErrorAction SilentlyContinue
     write-output "$(Get-Date -format u) - Starting upgrade processs." >> .\upgrade\upgrade.log
-    cmd /c start (Get-Item ".\wazuh-agent*.msi").Name -quiet -norestart -log installer.log
+    cmd /c start (Get-Item ".\*-agent*.msi").Name -quiet -norestart -log installer.log
 }
 
-# Check new version and restart the Wazuh service
+# Check new version and restart the Nsoc360 service
 function check-installation
 {
     $new_version = (Get-Content VERSION)
@@ -19,8 +19,8 @@ function check-installation
         Start-Sleep 2
         $new_version = (Get-Content VERSION)
     }
-    write-output "$(Get-Date -format u) - Restarting Wazuh service." >> .\upgrade\upgrade.log
-    Get-Service -Name "Wazuh" | Start-Service
+    write-output "$(Get-Date -format u) - Restarting NSOC360 service." >> .\upgrade\upgrade.log
+    Get-Service -Name $new_service | Start-Service
 }
 
 # Get current version
@@ -28,22 +28,39 @@ $current_version = (Get-Content VERSION)
 write-output "$(Get-Date -format u) - Current version: $($current_version)" > .\upgrade\upgrade.log
 
 # Get process name
-$current_process = "wazuh-agent"
-If (!(Test-Path ".\wazuh-agent.exe"))
+$current_process = "ossec-agent"
+If (Test-Path ".\nsoc360-agent.exe")
 {
-    $current_process = "ossec-agent"
+    $current_process = "nsoc360-agent"
 }
+ElseIf (Test-Path ".\wazuh-agent.exe")
+{
+    $current_process = "wazuh-agent"
+}
+$new_process = "nsoc360-agent"
+
+#Get service name
+$current_service = "OSSEC"
+if ((Get-Service -Name "Wazuh" -ErrorAction SilentlyContinue).Length -gt 0)
+{
+    $current_service = "Wazuh"
+}
+ElseIf ((Get-Service -Name "NSOC360" -ErrorAction SilentlyContinue).Length -gt 0)
+{
+    $current_service = "NSOC360"
+}
+$new_service = "NSOC360"
 
 # Ensure implicated processes are stopped before launch the upgrade
 Get-Process msiexec | Stop-Process -ErrorAction SilentlyContinue -Force
-Get-Service -Name "Wazuh" | Stop-Service -ErrorAction SilentlyContinue -Force
+Get-Service -Name $current_service | Stop-Service -ErrorAction SilentlyContinue -Force
 $process_id = (Get-Process $current_process -ErrorAction SilentlyContinue).id
 $counter = 5
 while($process_id -ne $null -And $counter -gt 0)
 {
-    write-output "$(Get-Date -format u) - Trying to stop Wazuh service again. Remaining attempts: $counter." >> .\upgrade\upgrade.log
+    write-output "$(Get-Date -format u) - Trying to stop NSOC360 service again. Remaining attempts: $counter." >> .\upgrade\upgrade.log
     $counter--
-    Get-Service -Name "Wazuh" | Stop-Service
+    Get-Service -Name $current_service | Stop-Service
     taskkill /pid $process_id /f /T
     Start-Sleep 2
     $process_id = (Get-Process $current_process -ErrorAction SilentlyContinue).id
@@ -55,26 +72,26 @@ check-installation
 write-output "$(Get-Date -format u) - Installation finished." >> .\upgrade\upgrade.log
 
 # Check process status
-$process_id = (Get-Process wazuh-agent).id
+$process_id = (Get-Process $new_process).id
 $counter = 5
 while($process_id -eq $null -And $counter -gt 0)
 {
     $counter--
-    Start-Service -Name "Wazuh"
+    Start-Service -Name $new_service
     Start-Sleep 2
-    $process_id = (Get-Process wazuh-agent).id
+    $process_id = (Get-Process $new_process).id
 }
 write-output "$(Get-Date -format u) - Process ID: $($process_id)" >> .\upgrade\upgrade.log
 # Wait for agent state to be cleaned
 Start-Sleep 10
 # Check status file
-$status = Get-Content .\wazuh-agent.state | select-string "status='connected'" -SimpleMatch
+$status = Get-Content .\$current_service.state | select-string "status='connected'" -SimpleMatch
 $counter = 5
 while($status -eq $null -And $counter -gt 0)
 {
     $counter--
     Start-Sleep 2
-    $status = Get-Content .\wazuh-agent.state | select-string "status='connected'" -SimpleMatch
+    $status = Get-Content .\$current_service.state | select-string "status='connected'" -SimpleMatch
 }
 write-output "$(Get-Date -format u) - Reading status file: $($status)" >> .\upgrade\upgrade.log
 

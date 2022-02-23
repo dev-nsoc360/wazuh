@@ -1,13 +1,14 @@
-** Wazuh Windows Agent **
+** NSOC360 Windows Agent **
 ** Copyright (C) 2015-2021, Wazuh Inc. **
+** Copyright (C) 2021-2022, NSOC360 Inc. **
 
 
-Thanks for installing the 'Wazuh Windows Agent'. Before you continue,
-make sure that you have an instance of the Wazuh manager running and configured
+Thanks for installing the 'NSOC360 Windows Agent'. Before you continue,
+make sure that you have an valid subscription for NSOC360 and correct installation parameters
 to accept this system as an agent.
 
-For more information on how to install the server version of Wazuh, look at:
-https://documentation.wazuh.com
+For more information, look at:
+https://nsoc360.com
 
 
 
@@ -23,8 +24,8 @@ https://documentation.wazuh.com
 
 1- How to obtain more information
 
-You can obtain more information about WAZUH on the following links:
-https://documentation.wazuh.com
+You can obtain more information about NSOC360 on the following links:
+https://nsoc360.com
 
 
 2- What this agent does
@@ -43,6 +44,6 @@ The Windows agent does the following tasks:
 3- Questions/Support
 
 Visit the following link for information on how to get help or
-support for WAZUH:
+support for NSOC360:
 
-https://wazuh.com/
+https://nsoc360.com/
